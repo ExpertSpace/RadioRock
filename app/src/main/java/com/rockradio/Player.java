@@ -30,7 +30,6 @@ public class Player {
         exoPlayer.addListener(new ExoPlayer.Listener() {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                // This state if player is ready to work and loaded all data
                 if(playbackState == 4)
                 {
                     MainActivity.playing_animation.setVisibility(View.VISIBLE);

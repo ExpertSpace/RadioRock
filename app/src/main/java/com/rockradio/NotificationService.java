@@ -16,8 +16,7 @@ public class NotificationService extends Service {
     boolean isPause = true;
 
     private void showNotification(int pos) {
-        RemoteViews views = new RemoteViews(getPackageName(),
-                R.layout.status_bar);
+        RemoteViews views = new RemoteViews(getPackageName(), R.layout.status_bar);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Const.ACTION.MAIN_ACTION);
@@ -43,13 +42,11 @@ public class NotificationService extends Service {
 
         if (pos == 0)
         {
-            views.setImageViewResource(R.id.status_bar_play,
-                    R.drawable.pause_ntf);
+            views.setImageViewResource(R.id.status_bar_play, R.drawable.pause_ntf);
         }
 
         if(pos == 1) {
-            views.setImageViewResource(R.id.status_bar_play,
-                    R.drawable.pause_ntf);
+            views.setImageViewResource(R.id.status_bar_play, R.drawable.pause_ntf);
             if(MainActivity.control_button!=null)
             {
                 MainActivity.control_button.setImageResource(R.drawable.play);
@@ -61,8 +58,7 @@ public class NotificationService extends Service {
         }
         if(pos == 2)
         {
-            views.setImageViewResource(R.id.status_bar_play,
-                    R.drawable.play_ntf);
+            views.setImageViewResource(R.id.status_bar_play, R.drawable.play_ntf);
             if(MainActivity.control_button!=null)
             {
                 MainActivity.control_button.setImageResource(R.drawable.play);
@@ -81,9 +77,9 @@ public class NotificationService extends Service {
     }
 
     @Override
-public void onDestroy() {
-super.onDestroy();
-}
+    public void onDestroy() {
+        super.onDestroy();
+    }
  
 @Override
 public IBinder onBind(Intent intent) {
@@ -112,8 +108,7 @@ return null;
                 Player.start(Const.RADIO_PATH, this);
             }
         }
-        else if (intent.getAction().equals(
-                Const.ACTION.STOPFOREGROUND_ACTION)) {
+        else if (intent.getAction().equals(Const.ACTION.STOPFOREGROUND_ACTION)) {
             if(MainActivity.control_button!=null)
             {
                 MainActivity.control_button.setImageResource(R.drawable.play);
@@ -126,9 +121,6 @@ return null;
             stopForeground(true);
             stopSelf();
         }
-
         return START_STICKY;
     }
-
-
 }

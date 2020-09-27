@@ -47,7 +47,6 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.8.3'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.google.android.exoplayer:exoplayer:r1.5.3'
-    implementation 'com.yandex.android:mobmetricalib:2.51'
     implementation 'com.github.NikhilBhutani:EasyDataAnalyzer:1.0'
     implementation 'com.android.support:cardview-v7:24+'
 
