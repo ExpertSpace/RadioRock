@@ -3,7 +3,10 @@ package com.rockradio;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -15,19 +18,30 @@ import android.widget.TextView;
 
 import com.wang.avi.AVLoadingIndicatorView;
 
+import java.util.Random;
+
 import io.github.nikhilbhutani.analyzer.DataAnalyzer;
+
+import static com.rockradio.GetTrackInfo.infoTrack;
 
 public class MainActivity extends AppCompatActivity {
 
+    static String artist, track;
+
     @SuppressLint("StaticFieldLeak")
     static ImageView background;
+
     @SuppressLint("StaticFieldLeak")
     static ImageButton control_button;
 
     @SuppressLint("StaticFieldLeak")
     static TextView title_font;
+
     @SuppressLint("StaticFieldLeak")
     static TextView info;
+
+    @SuppressLint("StaticFieldLeak")
+    static TextView infoSong;
 
     static CircularSeekBar volumeChanger;
 
@@ -48,13 +62,17 @@ public class MainActivity extends AppCompatActivity {
         initialise();
         setCustomFont();
         startListenVolume();
+        new GetTrackInfo().execute();
+        startRefreshing();
         startCounting();
     }
 
+    @SuppressLint("CutPasteId")
     void initialise() {
         background = (ImageView) findViewById(R.id.bckg);
         title_font = (TextView) findViewById(R.id.title_tv);
         info = (TextView) findViewById(R.id.info);
+        infoSong = (TextView) findViewById(R.id.info_song);
         volumeChanger = (CircularSeekBar) findViewById(R.id.circularSeekBar1);
         playing_animation = (AVLoadingIndicatorView) findViewById(R.id.playing_anim);
         playing_animation.setVisibility(View.GONE);
@@ -88,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static void setSongData() {
+        info.setText(infoTrack);
+    }
+
     public void startPlayerService() {
         Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);
         serviceIntent.setAction(Const.ACTION.STARTFOREGROUND_ACTION);
@@ -96,6 +118,30 @@ public class MainActivity extends AppCompatActivity {
 
     public void vibrate() {
         ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(Const.VIBRATE_TIME);
+    }
+
+    public void startRefreshing()
+    {
+        dataAnalyzer = new DataAnalyzer(this);
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(Const.PHOTO_LOAD_REFRESH_TIME);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                new GetTrackInfo().execute();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        t.start();
     }
 
     public void startCounting()

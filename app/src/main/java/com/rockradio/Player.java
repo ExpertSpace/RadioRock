@@ -10,7 +10,7 @@ import com.google.android.exoplayer.FrameworkSampleSource;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.TrackRenderer;
 
-import static com.rockradio.MainActivity.info;
+import static com.rockradio.MainActivity.infoSong;
 
 public class Player {
 
@@ -29,7 +29,7 @@ public class Player {
         exoPlayer = ExoPlayer.Factory.newInstance(1);
         exoPlayer.prepare(audioRenderer);
         exoPlayer.setPlayWhenReady(true);
-        info.setText("Идет буферизация...");
+        infoSong.setText("Идет буферизация...");
         exoPlayer.addListener(new ExoPlayer.Listener() {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
@@ -39,13 +39,13 @@ public class Player {
                     MainActivity.loading_animation.setVisibility(View.GONE);
                     MainActivity.control_button.setVisibility(View.VISIBLE);
                     MainActivity.control_button.setImageResource(R.drawable.pause);
-                    info.setText("");
+                    infoSong.setText("");
                 }
             }
 
             @Override
             public void onPlayWhenReadyCommitted() {
-                info.setText("Идет буферизация...");
+                infoSong.setText("Идет буферизация...");
             }
 
             @Override
