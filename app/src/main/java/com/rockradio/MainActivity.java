@@ -1,5 +1,6 @@
 package com.rockradio;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -17,10 +18,15 @@ import io.github.nikhilbhutani.analyzer.DataAnalyzer;
 
 public class MainActivity extends AppCompatActivity {
 
+    @SuppressLint("StaticFieldLeak")
     static ImageView background;
+    @SuppressLint("StaticFieldLeak")
     static ImageButton control_button;
 
-    static TextView title_tv;
+    @SuppressLint("StaticFieldLeak")
+    static TextView title_font;
+    @SuppressLint("StaticFieldLeak")
+    static TextView info;
 
     static CircularSeekBar volumeChanger;
 
@@ -29,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     static boolean controlIsActivated = false;
 
+    @SuppressLint("StaticFieldLeak")
     static DataAnalyzer dataAnalyzer;
 
     @Override
@@ -39,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
         initialise();
         setCustomFont();
         startListenVolume();
-        startRefreshing();
         startCounting();
     }
 
     void initialise() {
         background = (ImageView) findViewById(R.id.bckg);
-        title_tv = (TextView) findViewById(R.id.title_tv);
+        title_font = (TextView) findViewById(R.id.title_tv);
+        info = (TextView) findViewById(R.id.info);
         volumeChanger = (CircularSeekBar) findViewById(R.id.circularSeekBar1);
         playing_animation = (AVLoadingIndicatorView) findViewById(R.id.playing_anim);
         playing_animation.setVisibility(View.GONE);
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     void setCustomFont() {
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "BadSignal.otf");
-        title_tv.setTypeface(tf);
+        title_font.setTypeface(tf);
     }
 
     void startListenVolume() {
@@ -89,30 +96,6 @@ public class MainActivity extends AppCompatActivity {
         ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(Const.VIBRATE_TIME);
     }
 
-    public void startRefreshing()
-    {
-        dataAnalyzer = new DataAnalyzer(this);
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(Const.PHOTO_LOAD_REFRESH_TIME);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //new GetTrackInfo().execute();
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                }
-            }
-        };
-
-        t.start();
-    }
-
     public void startCounting()
     {
         Thread t = new Thread() {
@@ -134,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
         t.start();
     }
 

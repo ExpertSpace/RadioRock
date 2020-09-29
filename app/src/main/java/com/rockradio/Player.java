@@ -10,6 +10,8 @@ import com.google.android.exoplayer.FrameworkSampleSource;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.TrackRenderer;
 
+import static com.rockradio.MainActivity.info;
+
 public class Player {
 
     static ExoPlayer exoPlayer;
@@ -17,7 +19,7 @@ public class Player {
 
     public static void start(String URL, Context context)
     {
-        if(exoPlayer!=null)
+        if(exoPlayer != null)
         {
             exoPlayer.stop();
         }
@@ -27,6 +29,7 @@ public class Player {
         exoPlayer = ExoPlayer.Factory.newInstance(1);
         exoPlayer.prepare(audioRenderer);
         exoPlayer.setPlayWhenReady(true);
+        info.setText("Идет буферизация...");
         exoPlayer.addListener(new ExoPlayer.Listener() {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
@@ -36,12 +39,13 @@ public class Player {
                     MainActivity.loading_animation.setVisibility(View.GONE);
                     MainActivity.control_button.setVisibility(View.VISIBLE);
                     MainActivity.control_button.setImageResource(R.drawable.pause);
+                    info.setText("");
                 }
             }
 
             @Override
             public void onPlayWhenReadyCommitted() {
-
+                info.setText("Идет буферизация...");
             }
 
             @Override
@@ -53,14 +57,14 @@ public class Player {
 
     public static void stop()
     {
-        if(exoPlayer!=null) {
+        if(exoPlayer != null) {
             exoPlayer.stop();
         }
     }
 
     public static void setVolume(float volume)
     {
-        if(exoPlayer!= null) {
+        if(exoPlayer != null) {
             exoPlayer.sendMessage(audioRenderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, volume);
         }
     }

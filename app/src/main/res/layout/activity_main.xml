@@ -136,6 +136,37 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif_light"
+                    android:gravity="left|center"
+                    android:singleLine="true"
+                    android:text=""
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:textColor="#fff"
+                    android:textSize="@dimen/text_size"
+                    android:textStyle="normal|bold"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp" />
+
             </LinearLayout>
 
             <com.wang.avi.AVLoadingIndicatorView
