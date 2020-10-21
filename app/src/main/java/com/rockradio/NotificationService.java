@@ -47,24 +47,24 @@ public class NotificationService extends Service {
 
         if(pos == 1) {
             views.setImageViewResource(R.id.status_bar_play, R.drawable.pause_ntf);
-            if(MainActivity.control_button != null)
+            if(MainActivity.controlButton != null)
             {
-                MainActivity.control_button.setImageResource(R.drawable.play);
-                MainActivity.playing_animation.setVisibility(View.GONE);
-                MainActivity.loading_animation.setVisibility(View.VISIBLE);
-                MainActivity.control_button.setVisibility(View.GONE);
+                MainActivity.controlButton.setImageResource(R.drawable.play);
+                MainActivity.playingAnimation.setVisibility(View.GONE);
+                MainActivity.loadingAnimation.setVisibility(View.VISIBLE);
+                MainActivity.controlButton.setVisibility(View.GONE);
                 MainActivity.controlIsActivated = true;
             }
         }
         if(pos == 2)
         {
             views.setImageViewResource(R.id.status_bar_play, R.drawable.play_ntf);
-            if(MainActivity.control_button != null)
+            if(MainActivity.controlButton != null)
             {
-                MainActivity.control_button.setImageResource(R.drawable.play);
-                MainActivity.playing_animation.setVisibility(View.GONE);
-                MainActivity.loading_animation.setVisibility(View.GONE);
-                MainActivity.control_button.setVisibility(View.VISIBLE);
+                MainActivity.controlButton.setImageResource(R.drawable.play);
+                MainActivity.playingAnimation.setVisibility(View.GONE);
+                MainActivity.loadingAnimation.setVisibility(View.GONE);
+                MainActivity.controlButton.setVisibility(View.VISIBLE);
                 MainActivity.controlIsActivated = false;
             }
         }
@@ -80,11 +80,11 @@ public class NotificationService extends Service {
     public void onDestroy() {
         super.onDestroy();
     }
- 
-@Override
-public IBinder onBind(Intent intent) {
-return null;
-}
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -109,12 +109,12 @@ return null;
             }
         }
         else if (intent.getAction().equals(Const.ACTION.STOPFOREGROUND_ACTION)) {
-            if(MainActivity.control_button != null)
+            if(MainActivity.controlButton != null)
             {
-                MainActivity.control_button.setImageResource(R.drawable.play);
-                MainActivity.playing_animation.setVisibility(View.GONE);
-                MainActivity.loading_animation.setVisibility(View.GONE);
-                MainActivity.control_button.setVisibility(View.VISIBLE);
+                MainActivity.controlButton.setImageResource(R.drawable.play);
+                MainActivity.playingAnimation.setVisibility(View.GONE);
+                MainActivity.loadingAnimation.setVisibility(View.GONE);
+                MainActivity.controlButton.setVisibility(View.VISIBLE);
                 MainActivity.controlIsActivated = false;
             }
             Player.stop();

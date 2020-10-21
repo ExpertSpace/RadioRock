@@ -1,55 +1,54 @@
 package com.rockradio;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wang.avi.AVLoadingIndicatorView;
-
-import java.util.Random;
 
 import io.github.nikhilbhutani.analyzer.DataAnalyzer;
 
 import static com.rockradio.GetTrackInfo.infoTrack;
+import static com.rockradio.NetworkState.isOnline;
 
 public class MainActivity extends AppCompatActivity {
-
-    static String artist, track;
-
     @SuppressLint("StaticFieldLeak")
     static ImageView background;
 
     @SuppressLint("StaticFieldLeak")
-    static ImageButton control_button;
+    static ImageButton controlButton;
 
     @SuppressLint("StaticFieldLeak")
-    static TextView title_font;
-
-    @SuppressLint("StaticFieldLeak")
-    static TextView info;
+    static TextView titleFont;
 
     @SuppressLint("StaticFieldLeak")
     static TextView infoSong;
 
+    static Toast toast;
+
     static CircularSeekBar volumeChanger;
 
-    static AVLoadingIndicatorView playing_animation;
-    static AVLoadingIndicatorView loading_animation;
+    // Анимация в нижней части экрана при загрузке потока
+    static AVLoadingIndicatorView playingAnimation;
 
+    // Анимация загрузки потока в центре экрана
+    static AVLoadingIndicatorView loadingAnimation;
+
+    //Проверка того, активирована ли кнопка для воспроизведения/паузы
     static boolean controlIsActivated = false;
-
     @SuppressLint("StaticFieldLeak")
     static DataAnalyzer dataAnalyzer;
 
@@ -60,32 +59,43 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         initialise();
-        setCustomFont();
-        startListenVolume();
-        new GetTrackInfo().execute();
-        startRefreshing();
-        startCounting();
+        if(!isOnline(this))
+        {
+            toast = Toast.makeText(this, "Нет интернета",
+                    Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.BOTTOM, 0, 130);
+            toast.show();
+        }
+        else
+        {
+            setCustomFont();
+            startListenVolume();
+            new GetTrackInfo().execute();
+            startRefreshing();
+        }
     }
 
+    // Инициализация всех view элементов
     @SuppressLint("CutPasteId")
     void initialise() {
         background = (ImageView) findViewById(R.id.bckg);
-        title_font = (TextView) findViewById(R.id.title_tv);
-        info = (TextView) findViewById(R.id.info);
+        titleFont = (TextView) findViewById(R.id.title_tv);
         infoSong = (TextView) findViewById(R.id.info_song);
         volumeChanger = (CircularSeekBar) findViewById(R.id.circularSeekBar1);
-        playing_animation = (AVLoadingIndicatorView) findViewById(R.id.playing_anim);
-        playing_animation.setVisibility(View.GONE);
-        loading_animation = (AVLoadingIndicatorView) findViewById(R.id.load_animation);
-        control_button = (ImageButton) findViewById(R.id.control_button);
-        control_button.setOnClickListener(controlButtonListener);
+        playingAnimation = (AVLoadingIndicatorView) findViewById(R.id.playing_anim);
+        playingAnimation.setVisibility(View.GONE);
+        loadingAnimation = (AVLoadingIndicatorView) findViewById(R.id.load_animation);
+        controlButton = (ImageButton) findViewById(R.id.control_button);
+        controlButton.setOnClickListener(controlButtonListener);
     }
 
+    // Функция кастомного шрифта
     void setCustomFont() {
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "BadSignal.otf");
-        title_font.setTypeface(tf);
+        titleFont.setTypeface(tf);
     }
 
+    // Функция для прослушивания и изменения громкости от панели поиска до плеера
     void startListenVolume() {
         volumeChanger.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
@@ -106,20 +116,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Фунция для установки названия трека и имя исполнителя
     public static void setSongData() {
-        info.setText(infoTrack);
+        infoSong.setText(infoTrack);
     }
 
+    // Фунукция для фонового воспроизведения звука
     public void startPlayerService() {
         Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);
         serviceIntent.setAction(Const.ACTION.STARTFOREGROUND_ACTION);
         startService(serviceIntent);
     }
 
-    public void vibrate() {
-        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(Const.VIBRATE_TIME);
+    // Функция для вибрации, если сеть упала/восстановилась
+    public static void vibrate(Context c) {
+        Vibrator vibrator = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(Const.VIBRATE_TIME);
+        }
     }
 
+    // Обновление данных о треке
     public void startRefreshing()
     {
         dataAnalyzer = new DataAnalyzer(this);
@@ -132,31 +152,9 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                new GetTrackInfo().execute();
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                }
-            }
-        };
-
-        t.start();
-    }
-
-    public void startCounting()
-    {
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(500);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(dataAnalyzer!=null) {
-                                    Log.e("DATA USAGE", "------");
+                                if(isOnline())
+                                {
+                                    new GetTrackInfo().execute();
                                 }
                             }
                         });
@@ -165,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
         t.start();
     }
 
@@ -173,20 +172,20 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             if (!controlIsActivated) {
                 startPlayerService();
-                control_button.setImageResource(R.drawable.pause);
-                playing_animation.setVisibility(View.GONE);
-                loading_animation.setVisibility(View.VISIBLE);
-                control_button.setVisibility(View.GONE);
+                controlButton.setImageResource(R.drawable.pause);
+                playingAnimation.setVisibility(View.GONE);
+                loadingAnimation.setVisibility(View.VISIBLE);
+                controlButton.setVisibility(View.GONE);
                 controlIsActivated = true;
+
             } else {
                 Player.stop();
-                control_button.setImageResource(R.drawable.play);
-                playing_animation.setVisibility(View.GONE);
-                loading_animation.setVisibility(View.VISIBLE);
-                control_button.setVisibility(View.VISIBLE);
+                controlButton.setImageResource(R.drawable.play);
+                playingAnimation.setVisibility(View.GONE);
+                loadingAnimation.setVisibility(View.VISIBLE);
+                controlButton.setVisibility(View.VISIBLE);
                 controlIsActivated = false;
             }
-            vibrate();
         }
     };
 
