@@ -12,6 +12,8 @@ import com.google.android.exoplayer.FrameworkSampleSource;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.TrackRenderer;
 
+import static com.rockradio.MainActivity.controlButton;
+import static com.rockradio.MainActivity.playingAnimation;
 import static com.rockradio.MainActivity.toast;
 import static com.rockradio.MainActivity.vibrate;
 import static com.rockradio.NetworkState.isOnline;
@@ -48,16 +50,21 @@ public class Player {
                             Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.BOTTOM, 0, 130);
                     toast.show();
+
+                    Player.stop();
+                    controlButton.setImageResource(R.drawable.play);
+                    playingAnimation.setVisibility(View.GONE);
+
                     vibrate(context);
                 }
                 else
                 {
                     if(playbackState == 4)
                     {
-                        MainActivity.playingAnimation.setVisibility(View.VISIBLE);
+                        playingAnimation.setVisibility(View.VISIBLE);
                         MainActivity.loadingAnimation.setVisibility(View.GONE);
-                        MainActivity.controlButton.setVisibility(View.VISIBLE);
-                        MainActivity.controlButton.setImageResource(R.drawable.pause);
+                        controlButton.setVisibility(View.VISIBLE);
+                        controlButton.setImageResource(R.drawable.pause);
                     }
                 }
             }

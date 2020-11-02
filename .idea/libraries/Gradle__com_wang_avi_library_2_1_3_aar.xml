@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.wang.avi:library:2.1.3@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5f44bfd2ab99420f9b04875f6bb95e39/library-2.1.3/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5f44bfd2ab99420f9b04875f6bb95e39/library-2.1.3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5f44bfd2ab99420f9b04875f6bb95e39/library-2.1.3/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f028b8087f356dc8118fa0ff899fa51a/library-2.1.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f028b8087f356dc8118fa0ff899fa51a/library-2.1.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f028b8087f356dc8118fa0ff899fa51a/library-2.1.3/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.wang.avi/library/2.1.3/f3ea0c1e56a7eb8b5c0f8ced5f0adde51d4b609e/library-2.1.3-javadoc.jar!/" />

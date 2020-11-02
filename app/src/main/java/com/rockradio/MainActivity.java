@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 import com.wang.avi.AVLoadingIndicatorView;
 
-import io.github.nikhilbhutani.analyzer.DataAnalyzer;
-
 import static com.rockradio.GetTrackInfo.infoTrack;
 import static com.rockradio.NetworkState.isOnline;
 
@@ -49,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
     //Проверка того, активирована ли кнопка для воспроизведения/паузы
     static boolean controlIsActivated = false;
-    @SuppressLint("StaticFieldLeak")
-    static DataAnalyzer dataAnalyzer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         playingAnimation.setVisibility(View.GONE);
         loadingAnimation = (AVLoadingIndicatorView) findViewById(R.id.load_animation);
         controlButton = (ImageButton) findViewById(R.id.control_button);
-        controlButton.setOnClickListener(controlButtonListener);
     }
 
     // Функция кастомного шрифта
@@ -142,13 +137,13 @@ public class MainActivity extends AppCompatActivity {
     // Обновление данных о треке
     public void startRefreshing()
     {
-        dataAnalyzer = new DataAnalyzer(this);
+        //dataAnalyzer = new DataAnalyzer(this);
         Thread t = new Thread() {
             @Override
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(Const.PHOTO_LOAD_REFRESH_TIME);
+                        Thread.sleep(Const.INFO_LOAD_REFRESH_TIME);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -167,31 +162,28 @@ public class MainActivity extends AppCompatActivity {
         t.start();
     }
 
-    View.OnClickListener controlButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!controlIsActivated) {
-                startPlayerService();
-                controlButton.setImageResource(R.drawable.pause);
-                playingAnimation.setVisibility(View.GONE);
-                loadingAnimation.setVisibility(View.VISIBLE);
-                controlButton.setVisibility(View.GONE);
-                controlIsActivated = true;
-
-            } else {
-                Player.stop();
-                controlButton.setImageResource(R.drawable.play);
-                playingAnimation.setVisibility(View.GONE);
-                loadingAnimation.setVisibility(View.VISIBLE);
-                controlButton.setVisibility(View.VISIBLE);
-                controlIsActivated = false;
-            }
-        }
-    };
-
     @Override
     public void onBackPressed() {
         Player.stop();
         super.onBackPressed();
+    }
+
+    public void playPause(View view) {
+        if (!controlIsActivated) {
+            startPlayerService();
+            controlButton.setImageResource(R.drawable.pause);
+            playingAnimation.setVisibility(View.GONE);
+            loadingAnimation.setVisibility(View.VISIBLE);
+            controlButton.setVisibility(View.GONE);
+            controlIsActivated = true;
+
+        } else {
+            Player.stop();
+            controlButton.setImageResource(R.drawable.play);
+            playingAnimation.setVisibility(View.GONE);
+            loadingAnimation.setVisibility(View.VISIBLE);
+            controlButton.setVisibility(View.VISIBLE);
+            controlIsActivated = false;
+        }
     }
 }
