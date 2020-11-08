@@ -1,5 +1,6 @@
 package com.rockradio;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,10 +10,13 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import static com.rockradio.TrackInfo.infoTrack;
+
 public class NotificationService extends Service {
 
+    @SuppressLint("StaticFieldLeak")
     public static Context context;
-    Notification status;
+    Notification notification;
     boolean isPause = true;
 
     private void showNotification(int pos) {
@@ -40,11 +44,14 @@ public class NotificationService extends Service {
 
         views.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
 
+
+        // состояние после первого нажатия на кнопку play
         if (pos == 0)
         {
             views.setImageViewResource(R.id.status_bar_play, R.drawable.pause_ntf);
         }
 
+        // pos = 1 и pos = 2 состояние после нажатия на кнопку play/pause
         if(pos == 1) {
             views.setImageViewResource(R.id.status_bar_play, R.drawable.pause_ntf);
             if(MainActivity.controlButton != null)
@@ -56,6 +63,7 @@ public class NotificationService extends Service {
                 MainActivity.controlIsActivated = true;
             }
         }
+
         if(pos == 2)
         {
             views.setImageViewResource(R.id.status_bar_play, R.drawable.play_ntf);
@@ -68,12 +76,16 @@ public class NotificationService extends Service {
                 MainActivity.controlIsActivated = false;
             }
         }
-        status = new Notification.Builder(this).build();
-        status.contentView = views;
-        status.flags = Notification.FLAG_ONGOING_EVENT;
-        status.icon = R.drawable.radio;
-        status.contentIntent = pendingIntent;
-        startForeground(Const.FOREGROUND_SERVICE, status);
+
+        notification = new Notification.Builder(this).setContentText(infoTrack).build();
+        notification.contentView = views;
+        notification.flags = Notification.FLAG_ONGOING_EVENT;
+        notification.icon = R.drawable.radio;
+
+        notification.contentIntent = pendingIntent;
+
+        // для работы в фоновом режиме
+        startForeground(Const.FOREGROUND_SERVICE, notification);
     }
 
     @Override

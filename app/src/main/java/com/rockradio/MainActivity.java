@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.wang.avi.AVLoadingIndicatorView;
 
-import static com.rockradio.GetTrackInfo.infoTrack;
+import static com.rockradio.TrackInfo.infoTrack;
 import static com.rockradio.NetworkState.isOnline;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,13 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
     static CircularSeekBar volumeChanger;
 
-    // Анимация в нижней части экрана при загрузке потока
+    // анимация в нижней части экрана при загрузке потока
     static AVLoadingIndicatorView playingAnimation;
 
-    // Анимация загрузки потока в центре экрана
+    // анимация загрузки потока в центре экрана
     static AVLoadingIndicatorView loadingAnimation;
 
-    //Проверка того, активирована ли кнопка для воспроизведения/паузы
+    // проверка того, активирована ли кнопка для воспроизведения/паузы
     static boolean controlIsActivated = false;
 
     @Override
@@ -66,31 +66,31 @@ public class MainActivity extends AppCompatActivity {
         {
             setCustomFont();
             startListenVolume();
-            new GetTrackInfo().execute();
+            new TrackInfo().execute();
             startRefreshing();
         }
     }
 
-    // Инициализация всех view элементов
+    // инициализация всех view элементов
     @SuppressLint("CutPasteId")
     void initialise() {
-        background = (ImageView) findViewById(R.id.bckg);
-        titleFont = (TextView) findViewById(R.id.title_tv);
-        infoSong = (TextView) findViewById(R.id.info_song);
-        volumeChanger = (CircularSeekBar) findViewById(R.id.circularSeekBar1);
-        playingAnimation = (AVLoadingIndicatorView) findViewById(R.id.playing_anim);
+        background = findViewById(R.id.bckg);
+        titleFont = findViewById(R.id.title_tv);
+        infoSong = findViewById(R.id.info_song);
+        volumeChanger = findViewById(R.id.circularSeekBar1);
+        playingAnimation = findViewById(R.id.playing_anim);
         playingAnimation.setVisibility(View.GONE);
-        loadingAnimation = (AVLoadingIndicatorView) findViewById(R.id.load_animation);
-        controlButton = (ImageButton) findViewById(R.id.control_button);
+        loadingAnimation = findViewById(R.id.load_animation);
+        controlButton = findViewById(R.id.control_button);
     }
 
-    // Функция кастомного шрифта
+    // метод для кастомного шрифта
     void setCustomFont() {
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "BadSignal.otf");
         titleFont.setTypeface(tf);
     }
 
-    // Функция для прослушивания и изменения громкости от панели поиска до плеера
+    // метод для прослушивания и изменения громкости от панели поиска до плеера
     void startListenVolume() {
         volumeChanger.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
@@ -111,19 +111,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Фунция для установки названия трека и имя исполнителя
+    // метод для установки названия трека и имя исполнителя
     public static void setSongData() {
         infoSong.setText(infoTrack);
     }
 
-    // Фунукция для фонового воспроизведения звука
+    // метод для фонового воспроизведения звука
     public void startPlayerService() {
         Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);
         serviceIntent.setAction(Const.ACTION.STARTFOREGROUND_ACTION);
         startService(serviceIntent);
     }
 
-    // Функция для вибрации, если сеть упала/восстановилась
+    // метод для вибрации, если сеть упала/восстановилась
     public static void vibrate(Context c) {
         Vibrator vibrator = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
     // Обновление данных о треке
     public void startRefreshing()
     {
-        //dataAnalyzer = new DataAnalyzer(this);
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -149,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 if(isOnline())
                                 {
-                                    new GetTrackInfo().execute();
+                                    new TrackInfo().execute();
                                 }
                             }
                         });

@@ -1,13 +1,13 @@
 package com.rockradio;
 
 public class Const {
-    public static String RADIO_PATH =
+    public static final String RADIO_PATH =
             "http://lin3.ash.fast-serv.com:6026/stream_96";
 
-    public static String TRACK_INFO_URL =
+    public static final String TRACK_INFO_URL =
             "https://rr.streamanalyst.com/RR.update.php?d=1601396696614.html";
 
-    public static int INFO_LOAD_REFRESH_TIME = 300000;
+    public static final int INFO_LOAD_REFRESH_TIME = 300000;
 
     public final static int VIBRATE_TIME = 5;
 
